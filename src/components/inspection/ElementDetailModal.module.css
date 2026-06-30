@@ -1,0 +1,51 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.machine {
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.label {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}

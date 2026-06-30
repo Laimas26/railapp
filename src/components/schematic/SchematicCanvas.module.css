@@ -1,0 +1,26 @@
+.viewport {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.transformWrapper {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.transformContent {
+  width: 100%;
+}
+
+.svgHost {
+  width: 100%;
+}
+
+.svgHost :global(svg) {
+  width: 100%;
+  height: auto;
+  display: block;
+}

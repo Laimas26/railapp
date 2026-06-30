@@ -1,0 +1,74 @@
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.head {
+  margin-bottom: 4px;
+}
+
+.desc {
+  margin: 0 0 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.sub {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.empty {
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 32px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.num {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.machine {
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.measList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.notes {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+}

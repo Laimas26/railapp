@@ -1,0 +1,90 @@
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+}
+
+.histLink {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0 8px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  margin: 8px 0 12px;
+}
+
+.resume {
+  margin-bottom: 24px;
+  padding: 12px;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.resumeTitle {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.resumeRow,
+.taskRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  min-height: 56px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.resumeRow {
+  margin-bottom: 8px;
+}
+
+.resumeRow:last-child {
+  margin-bottom: 0;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.code {
+  flex: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 48px;
+}
+
+.taskDesc,
+.resumeDesc {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-dim);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

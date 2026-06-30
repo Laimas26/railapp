@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 620" class="schematic">
+  <!--
+    SIMPLIFIED placeholder schematic of Rimkų g. st.
+    Switch numbers (iešmai) and point machines (M..) are REAL, read from plan
+    SIII-S008-00-DP-GRS-RIM-BR-01. Track GEOMETRY is approximate and will be
+    replaced by an accurately traced layout. Each switch is a <g data-element-id>
+    group with a node circle, a transparent ≥48px tap target, and a label.
+  -->
+
+  <!-- direction + station labels -->
+  <text class="dir" x="24" y="40" text-anchor="start">&#8592; VILKYČIAI / DRAUGYSTĖ</text>
+  <text class="dir" x="1376" y="40" text-anchor="end">KLAIPĖDA &#8594;</text>
+  <text class="title" x="700" y="40" text-anchor="middle">RIMKŲ g. st.</text>
+
+  <!-- siding labels -->
+  <text class="siding" x="24" y="124">UAB „Geležies laužas“</text>
+  <text class="siding" x="24" y="464">UAB „Klaipėdos energija“ / AB „Gelsta“</text>
+  <text class="siding" x="24" y="524">AB „Klaipėdos keliai“</text>
+
+  <!-- ===== background tracks ===== -->
+  <g class="tracks" fill="none" stroke="#94a3b8" stroke-width="3">
+    <!-- upper siding -->
+    <polyline points="120,130 1280,130" />
+    <!-- main track I -->
+    <polyline points="60,290 1340,290" stroke="#cbd5e1" stroke-width="4" />
+    <!-- main track II -->
+    <polyline points="60,350 1340,350" stroke="#cbd5e1" stroke-width="4" />
+    <!-- lower sidings -->
+    <polyline points="120,440 1240,440" />
+    <polyline points="160,500 940,500" />
+    <!-- diverging connectors (decorative) -->
+    <polyline points="200,290 260,130" />
+    <polyline points="300,350 360,440" />
+    <polyline points="520,440 580,500" />
+    <polyline points="820,290 900,200 1060,200" />
+    <polyline points="980,440 1060,350" />
+    <polyline points="1140,290 1200,200" />
+  </g>
+
+  <!-- ===== switches (iešmai) ===== -->
+  <g class="switches">
+    <g data-element-id="sw-13" data-element-number="13">
+      <circle class="node" cx="200" cy="290" r="9" />
+      <rect class="hit" x="174" y="264" width="52" height="52" />
+      <text class="lbl" x="200" y="272" text-anchor="middle">13</text>
+    </g>
+    <g data-element-id="sw-11" data-element-number="11">
+      <circle class="node" cx="200" cy="350" r="9" />
+      <rect class="hit" x="174" y="334" width="52" height="52" />
+      <text class="lbl" x="200" y="382" text-anchor="middle">11</text>
+    </g>
+    <g data-element-id="sw-9" data-element-number="9">
+      <circle class="node" cx="300" cy="350" r="9" />
+      <rect class="hit" x="274" y="334" width="52" height="52" />
+      <text class="lbl" x="300" y="382" text-anchor="middle">9</text>
+    </g>
+    <g data-element-id="sw-1" data-element-number="1">
+      <circle class="node" cx="340" cy="290" r="9" />
+      <rect class="hit" x="314" y="264" width="52" height="52" />
+      <text class="lbl" x="340" y="272" text-anchor="middle">1</text>
+    </g>
+    <g data-element-id="sw-3" data-element-number="3">
+      <circle class="node" cx="420" cy="350" r="9" />
+      <rect class="hit" x="394" y="334" width="52" height="52" />
+      <text class="lbl" x="420" y="382" text-anchor="middle">3</text>
+    </g>
+    <g data-element-id="sw-21" data-element-number="21">
+      <circle class="node" cx="520" cy="440" r="9" />
+      <rect class="hit" x="494" y="414" width="52" height="52" />
+      <text class="lbl" x="520" y="422" text-anchor="middle">21</text>
+    </g>
+    <g data-element-id="sw-5" data-element-number="5">
+      <circle class="node" cx="560" cy="290" r="9" />
+      <rect class="hit" x="534" y="264" width="52" height="52" />
+      <text class="lbl" x="560" y="272" text-anchor="middle">5</text>
+    </g>
+    <g data-element-id="sw-23" data-element-number="23">
+      <circle class="node" cx="600" cy="500" r="9" />
+      <rect class="hit" x="574" y="474" width="52" height="52" />
+      <text class="lbl" x="600" y="482" text-anchor="middle">23</text>
+    </g>
+    <g data-element-id="sw-7" data-element-number="7">
+      <circle class="node" cx="640" cy="350" r="9" />
+      <rect class="hit" x="614" y="334" width="52" height="52" />
+      <text class="lbl" x="640" y="382" text-anchor="middle">7</text>
+    </g>
+    <g data-element-id="sw-25" data-element-number="25">
+      <circle class="node" cx="820" cy="290" r="9" />
+      <rect class="hit" x="794" y="264" width="52" height="52" />
+      <text class="lbl" x="820" y="272" text-anchor="middle">25</text>
+    </g>
+    <g data-element-id="sw-27" data-element-number="27">
+      <circle class="node" cx="900" cy="290" r="9" />
+      <rect class="hit" x="874" y="264" width="52" height="52" />
+      <text class="lbl" x="900" y="272" text-anchor="middle">27</text>
+    </g>
+    <g data-element-id="sw-33" data-element-number="33">
+      <circle class="node" cx="980" cy="440" r="9" />
+      <rect class="hit" x="954" y="414" width="52" height="52" />
+      <text class="lbl" x="980" y="422" text-anchor="middle">33</text>
+    </g>
+    <g data-element-id="sw-29" data-element-number="29">
+      <circle class="node" cx="1060" cy="290" r="9" />
+      <rect class="hit" x="1034" y="264" width="52" height="52" />
+      <text class="lbl" x="1060" y="272" text-anchor="middle">29</text>
+    </g>
+    <g data-element-id="sw-31" data-element-number="31">
+      <circle class="node" cx="1140" cy="290" r="9" />
+      <rect class="hit" x="1114" y="264" width="52" height="52" />
+      <text class="lbl" x="1140" y="272" text-anchor="middle">31</text>
+    </g>
+  </g>
+</svg>

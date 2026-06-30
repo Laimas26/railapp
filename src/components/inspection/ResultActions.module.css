@@ -1,0 +1,36 @@
+.row {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  flex: 1;
+  min-height: 64px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+  transition: all 0.12s ease;
+}
+
+.pass.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #0f172a;
+}
+
+.fail.active {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+.pass:not(.active) {
+  border-color: color-mix(in srgb, var(--green) 50%, var(--border));
+}
+
+.fail:not(.active) {
+  border-color: color-mix(in srgb, var(--red) 50%, var(--border));
+}

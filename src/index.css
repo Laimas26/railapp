@@ -1,0 +1,109 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #334155;
+  --border: #475569;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #38bdf8;
+  --yellow: #f5c542;
+  --green: #4caf50;
+  --red: #e53935;
+  --blue: #3b82f6;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  /* fill the iOS standalone viewport, account for the notch */
+  min-height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* ===========================================================================
+   Schematic SVG element states.
+   Switch groups carry data-element-id; the SchematicCanvas toggles the state
+   classes (el-highlighted / el-inspected / el-failed / el-active) on the group.
+   =========================================================================== */
+.schematic {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+}
+
+.schematic .title {
+  fill: var(--text);
+  font: 700 22px system-ui;
+}
+.schematic .dir {
+  fill: var(--text-dim);
+  font: 600 15px system-ui;
+}
+.schematic .siding {
+  fill: var(--text-dim);
+  font: 500 13px system-ui;
+}
+
+.schematic [data-element-id] {
+  cursor: pointer;
+}
+.schematic [data-element-id] .node {
+  fill: #64748b;
+  stroke: #0f172a;
+  stroke-width: 2;
+  transition: fill 0.12s ease;
+}
+.schematic [data-element-id] .hit {
+  fill: transparent;
+  pointer-events: all;
+}
+.schematic [data-element-id] .lbl {
+  fill: var(--text-dim);
+  font: 600 16px system-ui;
+  pointer-events: none;
+}
+
+/* yellow = needs inspection in the current task */
+.schematic [data-element-id].el-highlighted .node {
+  fill: var(--yellow);
+}
+.schematic [data-element-id].el-highlighted .lbl {
+  fill: var(--text);
+}
+/* green = inspected & passed */
+.schematic [data-element-id].el-inspected .node {
+  fill: var(--green);
+}
+/* red = inspected & failed */
+.schematic [data-element-id].el-failed .node {
+  fill: var(--red);
+}
+/* blue ring = currently open in the detail sheet */
+.schematic [data-element-id].el-active .node {
+  stroke: var(--blue);
+  stroke-width: 4;
+}
