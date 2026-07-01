@@ -15,6 +15,16 @@
   font-weight: 600;
 }
 
+.meta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
 .desc {
   margin: 0;
   font-size: 13px;

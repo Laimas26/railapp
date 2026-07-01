@@ -29,6 +29,7 @@ function makePoint(overrides: Partial<InspectionPoint> = {}): InspectionPoint {
     elementTypes: ['switch'],
     trackClassFilter: 'all',
     requiredTags: [],
+    periodicity: 'Kartą per savaitę',
     requiresMeasurements: false,
     measurementDefs: [],
     ...overrides,
@@ -109,6 +110,42 @@ describe('matchesPoint – elementType', () => {
   it('always rejects when elementTypes is empty (edge case)', () => {
     const el = makeElement({ elementType: 'switch' })
     const pt = makePoint({ elementTypes: [] })
+    expect(matchesPoint(el, pt)).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// driveTypeFilter
+// ---------------------------------------------------------------------------
+
+describe('matchesPoint – driveTypeFilter', () => {
+  it('omitted driveTypeFilter is no filter (any drive type matches)', () => {
+    const el = makeElement({ driveType: 'ecostar' })
+    const pt = makePoint({ driveTypeFilter: undefined })
+    expect(matchesPoint(el, pt)).toBe(true)
+  })
+
+  it("filter 'all' is no filter (any drive type matches)", () => {
+    const el = makeElement({ driveType: 's700' })
+    const pt = makePoint({ driveTypeFilter: 'all' })
+    expect(matchesPoint(el, pt)).toBe(true)
+  })
+
+  it('matches when element.driveType equals the filter', () => {
+    const el = makeElement({ driveType: 'unistar' })
+    const pt = makePoint({ driveTypeFilter: 'unistar' })
+    expect(matchesPoint(el, pt)).toBe(true)
+  })
+
+  it('rejects when element.driveType differs from the filter', () => {
+    const el = makeElement({ driveType: 'ecostar' })
+    const pt = makePoint({ driveTypeFilter: 's700' })
+    expect(matchesPoint(el, pt)).toBe(false)
+  })
+
+  it('rejects when element has no driveType but the filter is specific', () => {
+    const el = makeElement({ driveType: undefined })
+    const pt = makePoint({ driveTypeFilter: 'spg' })
     expect(matchesPoint(el, pt)).toBe(false)
   })
 })

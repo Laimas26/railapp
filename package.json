@@ -11,7 +11,7 @@
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "deploy": "npm run build && npx wrangler@latest pages deploy dist --project-name railapp --branch main"
+    "deploy": "npm run build && npx wrangler@3 pages deploy dist --project-name railapp --branch main"
   },
   "dependencies": {
     "dexie": "^4.0.11",

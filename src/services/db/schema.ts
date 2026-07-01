@@ -5,6 +5,7 @@ import type {
   InspectionPoint,
   InspectionSession,
   InspectionResult,
+  ElementPosition,
 } from '../../types'
 
 // ---------------------------------------------------------------------------
@@ -23,6 +24,7 @@ export class RailDB extends Dexie {
   inspectionPoints!: EntityTable<InspectionPoint, 'id'>
   inspectionSessions!: EntityTable<InspectionSession, 'id'>
   inspectionResults!: EntityTable<InspectionResult, 'id'>
+  elementPositions!: EntityTable<ElementPosition, 'id'>
 
   constructor() {
     super('railapp')
@@ -36,6 +38,11 @@ export class RailDB extends Dexie {
         'id, stationId, inspectionPointId, date, status, [stationId+date]',
       inspectionResults:
         'id, sessionId, elementId, [sessionId+elementId], [stationId+inspectionPointId]',
+    })
+
+    // v2: user-placed hotspot positions over the plan photo (survives reseeds).
+    this.version(2).stores({
+      elementPositions: 'id, stationId',
     })
   }
 }

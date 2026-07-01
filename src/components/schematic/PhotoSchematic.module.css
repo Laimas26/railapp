@@ -1,0 +1,123 @@
+.viewport {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+  overflow: hidden;
+  touch-action: none;
+  position: relative;
+}
+
+.transformWrapper {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.transformContent {
+  width: 100%;
+}
+
+.plan {
+  position: relative;
+  width: 100%;
+}
+
+.img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+}
+
+/* --- Hotspot markers ------------------------------------------------------ */
+.hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: #0f172a;
+  background: var(--text-dim);
+  border: 2px solid rgba(15, 23, 42, 0.6);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+/* switches = round, track circuits = square */
+.switch {
+  border-radius: 50%;
+}
+
+.track {
+  border-radius: 6px;
+}
+
+/* state colors share the same semantics for both shapes */
+.highlighted {
+  background: var(--yellow);
+  opacity: 1;
+}
+
+.pass {
+  background: var(--green);
+  color: #fff;
+  opacity: 1;
+}
+
+.fail {
+  background: var(--red);
+  color: #fff;
+  opacity: 1;
+}
+
+.active {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+  z-index: 2;
+}
+
+.placing {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+  animation: pulse 1s infinite;
+  z-index: 3;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--blue) 60%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  transform: translateX(-50%);
+  max-width: 90%;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--blue);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  z-index: 200;
+  pointer-events: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}

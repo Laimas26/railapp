@@ -78,6 +78,13 @@
   min-width: 48px;
 }
 
+.taskText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
 .taskDesc,
 .resumeDesc {
   font-size: 13px;
@@ -87,4 +94,11 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.periodicity {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  opacity: 0.8;
 }

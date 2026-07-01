@@ -107,3 +107,48 @@ button {
   stroke: var(--blue);
   stroke-width: 4;
 }
+
+/* ---------------------------------------------------------------------------
+   Track circuits (bėgių grandinės) — drawn as track SEGMENTS, not point nodes.
+   Same state classes (el-highlighted / el-inspected / el-failed / el-active)
+   carry the same colour semantics, applied to the segment stroke.
+   --------------------------------------------------------------------------- */
+.schematic [data-element-id] .tc-seg {
+  fill: none;
+  stroke: #64748b;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke 0.12s ease;
+}
+.schematic [data-element-id] .tc-lbl {
+  fill: var(--text-dim);
+  font: 600 15px system-ui;
+  pointer-events: none;
+}
+.schematic [data-element-id] .tc-plus,
+.schematic [data-element-id] .tc-dot {
+  fill: var(--text-dim);
+  font: 700 16px system-ui;
+  pointer-events: none;
+}
+
+/* yellow = needs inspection in the current task */
+.schematic [data-element-id].el-highlighted .tc-seg {
+  stroke: var(--yellow);
+}
+.schematic [data-element-id].el-highlighted .tc-lbl {
+  fill: var(--text);
+}
+/* green = inspected & passed */
+.schematic [data-element-id].el-inspected .tc-seg {
+  stroke: var(--green);
+}
+/* red = inspected & failed */
+.schematic [data-element-id].el-failed .tc-seg {
+  stroke: var(--red);
+}
+/* blue glow ring = currently open in the detail sheet */
+.schematic [data-element-id].el-active .tc-seg {
+  stroke-width: 11;
+  filter: drop-shadow(0 0 3px var(--blue)) drop-shadow(0 0 3px var(--blue));
+}

@@ -5,5 +5,11 @@ export function matchesPoint(el: SchematicElement, point: InspectionPoint): bool
   if (!point.elementTypes.includes(el.elementType)) return false
   if (point.trackClassFilter !== 'all' && el.trackClass !== point.trackClassFilter)
     return false
+  if (
+    point.driveTypeFilter &&
+    point.driveTypeFilter !== 'all' &&
+    el.driveType !== point.driveTypeFilter
+  )
+    return false
   return point.requiredTags.every((tag) => el.tags.includes(tag))
 }

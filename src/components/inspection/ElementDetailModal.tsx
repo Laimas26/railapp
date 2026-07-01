@@ -86,7 +86,7 @@ export function ElementDetailModal({
       title={
         element ? (
           <span>
-            Iešmas Nr. {element.elementNumber}
+            {element.label}
             {element.machine && (
               <span className={styles.machine}> · {element.machine}</span>
             )}
@@ -98,7 +98,20 @@ export function ElementDetailModal({
     >
       {element && (
         <div className={styles.content}>
-          <p className={styles.label}>{element.label}</p>
+          <p className={styles.meta}>
+            {element.elementType === 'track-circuit' ? (
+              <>
+                {element.relayEnd && <span>Relinis galas: {element.relayEnd}</span>}
+                {element.feedEnd && <span>Maitinimo galas: {element.feedEnd}</span>}
+              </>
+            ) : (
+              <>
+                {element.machine && <span>Pavara: {element.machine}</span>}
+                {element.driveType && <span>Tipas: {element.driveType}</span>}
+              </>
+            )}
+            {point && <span>Periodiškumas: {point.periodicity}</span>}
+          </p>
           {point && <p className={styles.desc}>{point.description}</p>}
 
           <ResultActions value={result} onChange={setResult} />

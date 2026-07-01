@@ -10,9 +10,11 @@ is set up for **Cloudflare Pages**.
 One-time setup (run in this folder; these open a browser to log in / sign up):
 
 ```sh
-npx wrangler@latest login
-npx wrangler@latest pages project create railapp --production-branch main
+npx wrangler@3 login
+npx wrangler@3 pages project create railapp --production-branch main
 ```
+
+(Pinned to wrangler **v3** because v4 requires Node 22; this machine runs Node 21.)
 
 Then deploy (re-run this any time to publish an update):
 

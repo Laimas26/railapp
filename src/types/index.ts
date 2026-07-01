@@ -11,10 +11,15 @@ export interface Station {
   schematicFile: string
 }
 
-export type ElementType = 'switch' | 'signal' | 'track'
+// 'switch' = iešmas (turnout, §4 tasks); 'track-circuit' = bėgių grandinė
+// (track section, §5 tasks). 'signal'/'track' reserved for future sections.
+export type ElementType = 'switch' | 'track-circuit' | 'signal' | 'track'
 
 /** main = pagrindiniai / nestabdomojo pravažiavimo keliai; other = kiti keliai. */
 export type TrackClass = 'main' | 'other'
+
+/** Point-machine drive type — drives §4.2/§4.3/§4.4/§4.7 task filtering. */
+export type DriveType = 'ecostar' | 'spg' | 's700' | 'unistar' | 'sp6' | 'other'
 
 /** A clickable element drawn on the schematic — primarily switches (iešmai). */
 export interface SchematicElement {
@@ -28,11 +33,16 @@ export interface SchematicElement {
   trackClass: TrackClass
   /** value of the data-element-id attribute on the SVG group */
   svgElementId: string
-  /** short Lithuanian label for the detail panel */
+  /** short Lithuanian label for the detail panel, e.g. "Iešmas Nr. 6" or "Bėgių grandinė 8-12" */
   label: string
-  /** optional point-machine designation, e.g. "M1" */
+  /** switches: point-machine designation, e.g. "M2" */
   machine?: string
-  /** arbitrary tags for future filter rules; empty in MVP */
+  /** switches: drive type (for §4.2/§4.3/§4.4/§4.7 filtering); defaults handled in seed */
+  driveType?: DriveType
+  /** track circuits: end labels — relay end ("+") and power-supply end ("●") */
+  relayEnd?: string
+  feedEnd?: string
+  /** arbitrary tags for future filter rules */
   tags: string[]
 }
 
@@ -66,11 +76,15 @@ export interface InspectionPoint {
   variant: string | null
   /** full Lithuanian description */
   description: string
-  /** which element types this task covers, e.g. ["switch"] */
+  /** which element types this task covers, e.g. ["switch"] or ["track-circuit"] */
   elementTypes: ElementType[]
   trackClassFilter: TrackClassFilter
+  /** restrict to switches of this drive type; 'all' or omitted = no drive filter */
+  driveTypeFilter?: DriveType | 'all'
   /** all tags an element must carry to match; empty = no tag filter */
   requiredTags: string[]
+  /** human-readable periodicity from the regulation, e.g. "Kartą per dvi savaites" */
+  periodicity: string
   requiresMeasurements: boolean
   measurementDefs: MeasurementDef[]
 }
@@ -88,6 +102,20 @@ export interface InspectionSession {
   startedAt: number
   completedAt: number | null
   status: SessionStatus
+}
+
+/**
+ * On-device placement of a schematic element's hotspot over the plan photo.
+ * USER data: persists across catalog reseeds (seed.ts never clears this table).
+ */
+export interface ElementPosition {
+  /** = SchematicElement.id (and svgElementId), primary key */
+  id: string
+  stationId: string
+  /** 0..1 of image width */
+  xPct: number
+  /** 0..1 of image height */
+  yPct: number
 }
 
 export type ResultValue = 'pass' | 'fail'

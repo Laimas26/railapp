@@ -95,7 +95,10 @@ export function HomeView() {
                 disabled={starting}
               >
                 <span className={styles.code}>{p.id}</span>
-                <span className={styles.taskDesc}>{p.description}</span>
+                <span className={styles.taskText}>
+                  <span className={styles.taskDesc}>{p.description}</span>
+                  <span className={styles.periodicity}>{p.periodicity}</span>
+                </span>
               </button>
             ))}
           </div>

@@ -41,7 +41,7 @@ function buildSummary(
   lines.push('')
   for (const r of results) {
     const el = elementById.get(r.elementId)
-    const num = el ? `Iešmas Nr. ${el.elementNumber}` : r.elementId
+    const num = el ? el.label : r.elementId
     const verdict = r.result === 'pass' ? 'Tinkama' : 'Netinkama'
     let line = `${num}: ${verdict}`
     if (r.measurements.length > 0) {
@@ -131,7 +131,7 @@ export function SessionDetailView() {
             <div key={r.id} className={styles.card}>
               <div className={styles.top}>
                 <span className={styles.num}>
-                  Iešmas Nr. {el?.elementNumber ?? '—'}
+                  {el?.label ?? '—'}
                   {el?.machine && <span className={styles.machine}> · {el.machine}</span>}
                 </span>
                 <Badge tone={r.result === 'pass' ? 'pass' : 'fail'}>
