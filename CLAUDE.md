@@ -235,6 +235,7 @@ See `docs/manual-test-checklist.md` for step-by-step field validation.
 - **`match.test.ts`** — element-point matching rules (trackClassFilter, requiredTags)
 - **`date.test.ts`** — date formatting and local date key generation
 - **`positionsTransfer.test.ts`** — marker position export/import serialization and validation
+- **`catalog.test.ts`** — task-picker grouping tree: section/subsection derivation and sort order
 
 Run with `npm test` or `npm run test:watch`.
 

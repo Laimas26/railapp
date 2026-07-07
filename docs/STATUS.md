@@ -8,9 +8,12 @@ _Last updated: 2026-07-07 (main/other trackClass confirmed, seed v4)._
   to publish (one-time auth already done). **Reload/reopen the app to get updates
   (PWA caches hard — fully close & reopen if a change isn't showing).**
 - **Stack:** Vite 5 + React 18 + TS, Dexie (IndexedDB, local-only), react-router-dom
-  (hash), zustand, react-zoom-pan-pinch, react-hook-form, vite-plugin-pwa. 71 Vitest tests.
+  (hash), zustand, react-zoom-pan-pinch, react-hook-form, vite-plugin-pwa. 80 Vitest tests.
 - **Catalog:** real LTG regulation — all of §4 (iešmai) + §5.1.1 / §5.1.4 (bėgių
   grandinės; 5.1.4 = shunt/užimtumas). Two element types: switch, track-circuit.
+  Home-screen task picker is grouped by section (§4, §5) → subsection (4.1, 4.2, etc.)
+  with collapsible expand/collapse; tasks with no matching elements are dimmed with
+  "0 elementų" badge. Grouping logic in `src/utils/catalog.ts`.
 - **Station data (Rimkai):** 33 real switches (1K…45), SP-6M drives; 18 track
   circuits (partial). `trackClass` main/other **CONFIRMED 2026-07-07** (seed v4):
   main = the 19 switches on the two bold through-lines (IK/IIK) —
