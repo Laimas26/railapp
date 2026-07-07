@@ -16,10 +16,25 @@ import { useUiStore } from '../store/uiStore'
 import { Header } from '../components/layout/Header'
 import { ProgressBar } from '../components/ui/ProgressBar'
 import { Button } from '../components/ui/Button'
-import { PhotoSchematic } from '../components/schematic/PhotoSchematic'
+import { DiagramBoard } from '../components/schematic/DiagramBoard'
 import { ElementDetailModal } from '../components/inspection/ElementDetailModal'
 import type { ElementPosition, SchematicElement } from '../types'
 import styles from './SchematicView.module.css'
+
+/** Switches first, then track circuits; within each, numeric-ascending by number. */
+function compareElements(a: SchematicElement, b: SchematicElement): number {
+  const rank = (el: SchematicElement) => (el.elementType === 'switch' ? 0 : 1)
+  if (rank(a) !== rank(b)) return rank(a) - rank(b)
+  const na = parseInt(a.elementNumber, 10)
+  const nb = parseInt(b.elementNumber, 10)
+  const aNaN = Number.isNaN(na)
+  const bNaN = Number.isNaN(nb)
+  if (aNaN && bNaN) return a.elementNumber.localeCompare(b.elementNumber)
+  if (aNaN) return 1
+  if (bNaN) return -1
+  if (na !== nb) return na - nb
+  return a.elementNumber.localeCompare(b.elementNumber)
+}
 
 export function SchematicView() {
   const { sessionId } = useParams<{ sessionId: string }>()
@@ -35,13 +50,13 @@ export function SchematicView() {
 
   const allElements =
     useLiveQuery(
-      () => (stationId ? getElementsByStation(db, stationId) : []),
+      () => (stationId ? getElementsByStation(db, stationId) : Promise.resolve([])),
       [stationId],
     ) ?? []
 
-  const positionList =
+  const positionsList =
     useLiveQuery(
-      () => (stationId ? getPositions(db, stationId) : []),
+      () => (stationId ? getPositions(db, stationId) : Promise.resolve([])),
       [stationId],
     ) ?? []
 
@@ -50,49 +65,37 @@ export function SchematicView() {
   const [editMode, setEditMode] = useState(false)
   const [placingId, setPlacingId] = useState<string | null>(null)
 
-  const positions = useMemo(
-    () => new Map(positionList.map((p) => [p.id, p])),
-    [positionList],
+  const positionsMap = useMemo(() => {
+    const m = new Map<string, ElementPosition>()
+    for (const p of positionsList) m.set(p.id, p)
+    return m
+  }, [positionsList])
+
+  const sortedElements = useMemo(
+    () => [...allElements].sort(compareElements),
+    [allElements],
   )
 
+  // element id === svgElementId, so these sets key the markers directly.
   const highlightedIds = useMemo(
     () => new Set(highlighted.map((el) => el.id)),
     [highlighted],
   )
 
-  // element id -> 'pass' | 'fail'
   const resultsByElement = useMemo(() => {
-    const highlightedSet = new Set(highlighted.map((el) => el.id))
     const map = new Map<string, 'pass' | 'fail'>()
-    for (const r of results) {
-      if (highlightedSet.has(r.elementId)) map.set(r.elementId, r.result)
-    }
+    for (const r of results) map.set(r.elementId, r.result)
     return map
-  }, [results, highlighted])
-
-  // All station elements ordered switches-first then track circuits (by number).
-  const pickerElements = useMemo(() => {
-    const byNumber = (a: SchematicElement, b: SchematicElement) =>
-      a.elementNumber.localeCompare(b.elementNumber, undefined, {
-        numeric: true,
-      })
-    const switches = allElements
-      .filter((el) => el.elementType === 'switch')
-      .sort(byNumber)
-    const tracks = allElements
-      .filter((el) => el.elementType === 'track-circuit')
-      .sort(byNumber)
-    return [...switches, ...tracks]
-  }, [allElements])
+  }, [results])
 
   const placedCount = useMemo(
-    () => allElements.filter((el) => positions.has(el.id)).length,
-    [allElements, positions],
+    () => allElements.filter((el) => positionsMap.has(el.id)).length,
+    [allElements, positionsMap],
   )
 
   const unplacedHighlighted = useMemo(
-    () => highlighted.filter((el) => !positions.has(el.id)).length,
-    [highlighted, positions],
+    () => highlighted.filter((el) => !positionsMap.has(el.id)).length,
+    [highlighted, positionsMap],
   )
 
   useEffect(() => {
@@ -103,6 +106,7 @@ export function SchematicView() {
 
   const onElementTap = (elementId: string) => {
     if (editMode) {
+      // Tapping a placed marker selects it for fine-tuning / removal.
       setPlacingId(elementId)
       return
     }
@@ -115,18 +119,17 @@ export function SchematicView() {
 
   const onPlaceAt = async (xPct: number, yPct: number) => {
     if (!placingId || !stationId) return
-    const pos: ElementPosition = { id: placingId, stationId, xPct, yPct }
-    await setPosition(db, pos)
+    await setPosition(db, { id: placingId, stationId, xPct, yPct })
     setToast('Vieta išsaugota')
   }
 
-  const clearPlacement = async () => {
+  const removePlacement = async () => {
     if (!placingId) return
     await deletePosition(db, placingId)
     setToast('Vieta pašalinta')
   }
 
-  const toggleEditMode = () => {
+  const toggleEdit = () => {
     setEditMode((v) => !v)
     setPlacingId(null)
   }
@@ -169,52 +172,63 @@ export function SchematicView() {
         back
       />
 
-      <div className={styles.meta}>
-        <p className={styles.periodicity}>{point.periodicity}</p>
-        {descOpen && <p className={styles.desc}>{point.description}</p>}
-        {editMode ? (
-          <p className={styles.editInfo}>
-            Priskirta {placedCount}/{allElements.length}
-          </p>
-        ) : highlighted.length === 0 ? (
-          <p className={styles.noMatch}>
-            Šiai užduočiai tinkamų elementų šioje stotyje nėra.
-          </p>
-        ) : (
-          <ProgressBar done={progress.done} total={progress.total} />
-        )}
-        {!editMode && unplacedHighlighted > 0 && (
-          <p className={styles.noMatch}>
-            Kai kurie šios užduoties elementai dar nepažymėti plane (
-            {unplacedHighlighted}). Paspauskite „Redaguoti vietas“.
-          </p>
-        )}
-      </div>
-
-      {editMode && (
-        <div className={styles.picker}>
-          {pickerElements.map((el) => (
-            <button
-              key={el.id}
-              className={`${styles.chip} ${
-                el.id === placingId ? styles.chipActive : ''
-              } ${positions.has(el.id) ? styles.chipPlaced : ''}`}
-              onClick={() => setPlacingId(el.id)}
-            >
-              {positions.has(el.id) ? '✓ ' : ''}
-              {el.elementNumber}
-            </button>
-          ))}
+      {editMode ? (
+        <>
+          <div className={styles.meta}>
+            <p className={styles.editInfo}>
+              Pasirinkite elementą ir bakstelėkite plane, kad pažymėtumėte jo vietą.
+            </p>
+            <p className={styles.periodicity}>
+              Priskirta {placedCount}/{allElements.length}
+            </p>
+          </div>
+          <div className={styles.picker}>
+            {sortedElements.map((el) => {
+              const classes = [styles.chip]
+              if (positionsMap.has(el.id)) classes.push(styles.chipPlaced)
+              if (el.id === placingId) classes.push(styles.chipActive)
+              return (
+                <button
+                  key={el.id}
+                  className={classes.join(' ')}
+                  onClick={() => setPlacingId(el.id)}
+                >
+                  {positionsMap.has(el.id) ? '✓ ' : ''}
+                  {el.elementNumber}
+                </button>
+              )
+            })}
+          </div>
+        </>
+      ) : (
+        <div className={styles.meta}>
+          <p className={styles.periodicity}>{point.periodicity}</p>
+          {descOpen && <p className={styles.desc}>{point.description}</p>}
+          {highlighted.length === 0 ? (
+            <p className={styles.noMatch}>
+              Šiai užduočiai tinkamų elementų šioje stotyje nėra.
+            </p>
+          ) : (
+            <>
+              <ProgressBar done={progress.done} total={progress.total} />
+              {unplacedHighlighted > 0 && (
+                <p className={styles.noMatch}>
+                  Kai kurie šios užduoties elementai dar nepažymėti plane (
+                  {unplacedHighlighted}). Paspauskite „Redaguoti vietas“.
+                </p>
+              )}
+            </>
+          )}
         </div>
       )}
 
-      <PhotoSchematic
-        imageKey={session.stationId}
+      <DiagramBoard
+        svgKey={session.stationId}
         elements={allElements}
-        positions={positions}
+        positions={positionsMap}
         highlightedIds={highlightedIds}
         resultsByElement={resultsByElement}
-        activeId={selectedSvgElementId}
+        activeId={editMode ? null : selectedSvgElementId}
         editMode={editMode}
         placingId={placingId}
         onElementTap={onElementTap}
@@ -225,17 +239,17 @@ export function SchematicView() {
         {editMode ? (
           <div className={styles.editActions}>
             {placingId && (
-              <Button variant="danger" onClick={clearPlacement}>
+              <Button variant="danger" fullWidth onClick={removePlacement}>
                 Pašalinti vietą
               </Button>
             )}
-            <Button variant="primary" fullWidth onClick={toggleEditMode}>
+            <Button variant="secondary" fullWidth onClick={toggleEdit}>
               Baigti redagavimą
             </Button>
           </div>
         ) : (
           <div className={styles.editActions}>
-            <Button variant="secondary" onClick={toggleEditMode}>
+            <Button variant="secondary" fullWidth onClick={toggleEdit}>
               Redaguoti vietas
             </Button>
             <Button variant="primary" fullWidth onClick={finish}>

@@ -1,0 +1,134 @@
+.viewport {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+  overflow: hidden;
+  touch-action: none;
+  position: relative;
+}
+
+.transformWrapper {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.transformContent {
+  width: 100%;
+}
+
+.plan {
+  position: relative;
+  width: 100%;
+}
+
+.svgHost {
+  display: block;
+  width: 100%;
+}
+
+.svgHost svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Overlay shares the diagram's viewBox and fills the exact same box as the
+   background svg, so markers align and scale identically at any zoom. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* transparent full-box target so empty-plane taps register as "place" */
+.placeArea {
+  fill: transparent;
+  pointer-events: all;
+}
+
+/* --- SVG markers (sized in viewBox units) --------------------------------- */
+.marker {
+  cursor: pointer;
+}
+
+/* transparent hit-padding keeps small markers tappable/draggable */
+.hit {
+  fill: transparent;
+  pointer-events: all;
+}
+
+.node {
+  fill: #64748b;
+  stroke: rgba(15, 23, 42, 0.6);
+  stroke-width: 1.5;
+  transition: fill 0.12s ease;
+}
+
+.label {
+  fill: var(--text-dim);
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.7);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+/* state colors share the same semantics for both shapes */
+.highlighted .node {
+  fill: var(--yellow);
+}
+
+.highlighted .label {
+  fill: var(--text);
+}
+
+.pass .node {
+  fill: var(--green);
+}
+
+.fail .node {
+  fill: var(--red);
+}
+
+.active .node {
+  stroke: var(--blue);
+  stroke-width: 3;
+}
+
+.placing .node {
+  stroke: var(--blue);
+  stroke-width: 3;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    stroke-opacity: 1;
+  }
+  50% {
+    stroke-opacity: 0.3;
+  }
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  transform: translateX(-50%);
+  max-width: 90%;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--blue);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  z-index: 200;
+  pointer-events: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}

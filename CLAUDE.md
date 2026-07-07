@@ -187,8 +187,14 @@ SchematicCanvas toggles these CSS classes on element groups; defined as:
 The Rimkai data in `src/services/db/seed.ts` uses **REAL switch numbers and machines** (M1–M33, read from plan SIII-S008-00-DP-GRS-RIM-BR-01, LTG Infra 2024-09).
 
 **However:**
-- **(a) Main-vs-other `trackClass` per switch is a BEST-GUESS** pending the user's confirmation. Currently, switches 1, 3, 5, 7, 25, 27 are marked `'main'`; the rest `'other'`. This controls which switches appear in 4.1.2a (main) vs 4.1.2b (other).
-  - **Fix:** User confirms the split → update `SWITCHES` array in seed.ts with the correct `trackClass` value. Rerun app; data reseeds (idempotent).
+- **(a) Main-vs-other `trackClass` per switch — CONFIRMED 2026-07-07** (seed v4).
+  Rule: a switch is `'main'` iff it sits on one of the **two bold through-lines**
+  (pagrindiniai keliai IK/IIK) on the diagram; yard-ladder / siding / ramp switches
+  are `'other'`. Main (19): `1K 2K 3K 4 5K 6K 7K 8K 10K 11K 12K 13K 14K 15K 19 20K
+  23K 27K 35`; other (14): `9 16 17 18 21 22 24 25 26 29 37 39 43 45`. This controls
+  which switches appear in every §4 a (main) vs b (other) task, e.g. 4.1.1a/b.
+  - **Fix any single switch:** edit its row in the `SWITCHES` array in seed.ts and
+    bump `SEED_VERSION`. Rerun app; reference data reseeds (idempotent).
 
 - **(b) SVG geometry is simplified**, not the true track layout. The schematic at `src/assets/schematics/rimkai.svg` is a working diagram, not a scale reproduction.
   - **Fix:** Once the user confirms the geometry, drop an accurate SVG in place and update `schematicElements` to match the new `svgElementId` values.

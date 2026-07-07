@@ -23,8 +23,8 @@ import type {
 //     ("+") and a power-supply end ("●").
 //
 // CAVEATS (data-only, correctable without code):
-//   * trackClass (main vs other) per switch is a BEST-GUESS pending user
-//     confirmation — it drives the §4 a/b split.
+//   * trackClass (main vs other) per switch was CONFIRMED 2026-07-07 against the
+//     station diagram (main = on the two bold through-lines); drives the §4 a/b split.
 //   * 33 switches are the authoritative list from the real station track plan;
 //     switch numbers keep their "K" suffix. machine ↔ switch mapping is NOT yet
 //     confirmed (machine = null for all).
@@ -47,40 +47,46 @@ const station: Station = {
 // [number, machine | null, trackClass]   driveType is 'sp6' for every switch.
 // 33 switches read from the real Rimkų g. st. track plan. Switch numbers keep
 // the "K" suffix exactly as drawn (e.g. "6K", "16"). machine ↔ switch mapping
-// is NOT yet confirmed, so machine is null for all. trackClass (main vs other)
-// is a BEST-GUESS pending confirmation; it drives the §4 a/b split.
+// is NOT yet confirmed, so machine is null for all.
+//
+// trackClass (main vs other) drives the §4 a/b split (4.1.1a = main tracks).
+// CONFIRMED 2026-07-07 by the user against the station diagram: "main" = every
+// switch lying on the two BOLD lines through the middle (the two pagrindiniai
+// keliai IK/IIK). Everything on the yard ladder, sidings and ramps = "other".
+// Read off the placed markers in the app diagram (screenshots for claude/
+// for claude.jpg) — see docs/STATUS.md.
 const SWITCHES: Array<[string, string | null, TrackClass]> = [
-  // MAIN-track switches (pagrindiniai / nestabdomojo pravažiavimo keliai)
+  // MAIN-track switches — on the two bold through-lines (pagrindiniai keliai)
   ['1K', null, 'main'],
   ['2K', null, 'main'],
   ['3K', null, 'main'],
+  ['4', null, 'main'],
   ['5K', null, 'main'],
+  ['6K', null, 'main'],
   ['7K', null, 'main'],
-  ['9', null, 'main'],
+  ['8K', null, 'main'],
+  ['10K', null, 'main'],
   ['11K', null, 'main'],
+  ['12K', null, 'main'],
   ['13K', null, 'main'],
+  ['14K', null, 'main'],
   ['15K', null, 'main'],
-  ['16', null, 'main'],
-  ['17', null, 'main'],
-  ['18', null, 'main'],
-  // OTHER-track switches (kiti keliai)
-  ['4', null, 'other'],
-  ['6K', null, 'other'],
-  ['8K', null, 'other'],
-  ['10K', null, 'other'],
-  ['12K', null, 'other'],
-  ['14K', null, 'other'],
-  ['19', null, 'other'],
-  ['20K', null, 'other'],
+  ['19', null, 'main'],
+  ['20K', null, 'main'],
+  ['23K', null, 'main'],
+  ['27K', null, 'main'],
+  ['35', null, 'main'],
+  // OTHER-track switches — yard ladder, sidings, ramps (kiti keliai)
+  ['9', null, 'other'],
+  ['16', null, 'other'],
+  ['17', null, 'other'],
+  ['18', null, 'other'],
   ['21', null, 'other'],
   ['22', null, 'other'],
-  ['23K', null, 'other'],
   ['24', null, 'other'],
   ['25', null, 'other'],
   ['26', null, 'other'],
-  ['27K', null, 'other'],
   ['29', null, 'other'],
-  ['35', null, 'other'],
   ['37', null, 'other'],
   ['39', null, 'other'],
   ['43', null, 'other'],
@@ -257,7 +263,7 @@ const inspectionPoints: InspectionPoint[] = SEED_POINTS.map((p) => ({
 
 // Bump this whenever station/element/catalog reference data changes so existing
 // installs refresh it. Sessions & results are user data and are never cleared.
-const SEED_VERSION = 3
+const SEED_VERSION = 4
 const SEED_VERSION_KEY = 'railapp.seedVersion'
 
 /**
