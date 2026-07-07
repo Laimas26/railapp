@@ -100,6 +100,30 @@
   align-items: stretch;
 }
 
+.transferHint {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin: 0 0 0.5rem;
+}
+
+.transferArea {
+  width: 100%;
+  min-height: 8rem;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
 .empty {
   flex: 1;
   display: flex;

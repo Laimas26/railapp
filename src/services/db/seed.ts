@@ -8,6 +8,7 @@ import type {
   TrackClassFilter,
   DriveType,
   ElementType,
+  ElementPosition,
 } from '../../types'
 
 // ---------------------------------------------------------------------------
@@ -297,5 +298,68 @@ export async function seedDatabase(database: RailDB): Promise<void> {
 
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem(SEED_VERSION_KEY, String(SEED_VERSION))
+  }
+}
+
+// --- Default marker positions ----------------------------------------------
+// The user's confirmed on-diagram placement of all 33 switches (xPct/yPct are
+// 0..1 fractions of the diagram viewBox). Baked in so every device — and any
+// reinstall after iOS evicts IndexedDB — shows the markers without re-placing
+// them. Track circuits (tc-*) are not placed yet. Captured 2026-07-07 by
+// exporting the laptop's positions ("Kopijuoti vietas").
+//
+// Bump POS_SEED_VERSION to push an updated default placement to all installs.
+// NOTE: reseeding bulkPut-s these ids (a keyed upsert — replaces the row for
+// each id; ids NOT in this list are left untouched, never deleted). So a version
+// bump overwrites any manual tweak the user made to a default switch on a device
+// (intended: the baked set is canonical). If ElementPosition ever gains extra
+// per-row fields, revisit — bulkPut would overwrite them for these ids.
+const DEFAULT_POSITIONS: Array<[string, number, number]> = [
+  ['sw-1K', 0.8176, 0.5448], ['sw-2K', 0.0167, 0.5443], ['sw-3K', 0.7925, 0.5405],
+  ['sw-4', 0.0429, 0.4475], ['sw-5K', 0.7475, 0.4643], ['sw-6K', 0.1349, 0.5507],
+  ['sw-7K', 0.7658, 0.5527], ['sw-8K', 0.1568, 0.4592], ['sw-9', 0.8167, 0.7796],
+  ['sw-10K', 0.2009, 0.4562], ['sw-11K', 0.6716, 0.5527], ['sw-12K', 0.2526, 0.463],
+  ['sw-13K', 0.609, 0.4674], ['sw-14K', 0.2849, 0.5507], ['sw-15K', 0.6132, 0.5527],
+  ['sw-16', 0.2344, 0.3678], ['sw-17', 0.5682, 0.6381], ['sw-18', 0.2712, 0.2763],
+  ['sw-19', 0.8075, 0.4582], ['sw-20K', 0.3167, 0.5507], ['sw-21', 0.6633, 0.6381],
+  ['sw-22', 0.3083, 0.1582], ['sw-23K', 0.6591, 0.4552], ['sw-24', 0.3728, 0.6381],
+  ['sw-25', 0.6157, 0.2649], ['sw-26', 0.3984, 0.726], ['sw-27K', 0.5824, 0.4613],
+  ['sw-29', 0.5641, 0.3668], ['sw-35', 0.8737, 0.4625], ['sw-37', 0.883, 0.4113],
+  ['sw-39', 0.8904, 0.3698], ['sw-43', 0.8454, 0.8454], ['sw-45', 0.8808, 0.8424],
+]
+
+const defaultPositions: ElementPosition[] = DEFAULT_POSITIONS.map(
+  ([id, xPct, yPct]) => ({ id, stationId: STATION_ID, xPct, yPct }),
+)
+
+const POS_SEED_VERSION = 1
+const POS_SEED_VERSION_KEY = 'railapp.posSeedVersion'
+
+/**
+ * Seed the user's confirmed default marker positions. Reseeds when the version
+ * changed OR when the positions are actually missing for this station — the
+ * latter is essential because localStorage and IndexedDB can be evicted
+ * independently on iOS: if the version flag survives but IndexedDB was wiped, a
+ * version-only guard would skip seeding and leave the diagram permanently empty
+ * (the exact case this feature exists to survive). bulkPut is a keyed upsert, so
+ * ids not in the default set are left untouched. Call AFTER any elementPositions
+ * cleanup in bootstrap so it isn't wiped.
+ */
+export async function seedDefaultPositions(database: RailDB): Promise<void> {
+  const storedVersion = Number(
+    (typeof localStorage !== 'undefined' &&
+      localStorage.getItem(POS_SEED_VERSION_KEY)) ||
+      0,
+  )
+  const existing = await database.elementPositions
+    .where('stationId')
+    .equals(STATION_ID)
+    .count()
+  if (storedVersion === POS_SEED_VERSION && existing > 0) return
+
+  await database.elementPositions.bulkPut(defaultPositions)
+
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(POS_SEED_VERSION_KEY, String(POS_SEED_VERSION))
   }
 }

@@ -222,7 +222,7 @@ Both are **data-only swaps** with no code changes.
 - Service worker serves cached assets; app works fully offline
 - IndexedDB persists session/result data across force-quit
 - **⚠️ iOS may evict IndexedDB if app is not used for ~2 weeks** (iOS storage quota)
-  - Mitigation: SessionDetailView has a "Kopijuoti" (Copy to Clipboard) button to export session data as text
+  - Mitigation: SessionDetailView has a "Kopijuoti" (Copy to Clipboard) button to export session data as text; marker positions can be backed up via "Kopijuoti vietas" (edit-mode footer) to move them between devices
 
 See `docs/manual-test-checklist.md` for step-by-step field validation.
 
@@ -234,6 +234,7 @@ See `docs/manual-test-checklist.md` for step-by-step field validation.
 
 - **`match.test.ts`** — element-point matching rules (trackClassFilter, requiredTags)
 - **`date.test.ts`** — date formatting and local date key generation
+- **`positionsTransfer.test.ts`** — marker position export/import serialization and validation
 
 Run with `npm test` or `npm run test:watch`.
 

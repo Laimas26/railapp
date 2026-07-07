@@ -1,6 +1,6 @@
 # Project status & pickup notes — railapp
 
-_Last updated: 2026-07-01 (end of session)._
+_Last updated: 2026-07-07 (main/other trackClass confirmed, seed v4)._
 
 ## Where it's at
 - **Live:** https://railapp.pages.dev (Cloudflare Pages). iPhone install: open in
@@ -8,7 +8,7 @@ _Last updated: 2026-07-01 (end of session)._
   to publish (one-time auth already done). **Reload/reopen the app to get updates
   (PWA caches hard — fully close & reopen if a change isn't showing).**
 - **Stack:** Vite 5 + React 18 + TS, Dexie (IndexedDB, local-only), react-router-dom
-  (hash), zustand, react-zoom-pan-pinch, react-hook-form, vite-plugin-pwa. 43 Vitest tests.
+  (hash), zustand, react-zoom-pan-pinch, react-hook-form, vite-plugin-pwa. 71 Vitest tests.
 - **Catalog:** real LTG regulation — all of §4 (iešmai) + §5.1.1 / §5.1.4 (bėgių
   grandinės; 5.1.4 = shunt/užimtumas). Two element types: switch, track-circuit.
 - **Station data (Rimkai):** 33 real switches (1K…45), SP-6M drives; 18 track
@@ -29,8 +29,15 @@ room, embedded as a base64 image in `src/assets/schematics/rimkai.svg`. Rendered
   circuit, number label below), sized in the diagram's viewBox units so they scale
   with zoom. User positions them via **"Redaguoti vietas"** (pick element → tap to
   place, drag to move, "Pašalinti vietą" to clear). Stored in `elementPositions`
-  Dexie table (v2). **Start EMPTY** — default seeding removed; existing installs'
-  old positions are cleared once via `localStorage 'railapp.posReset'='2'`.
+  Dexie table (v2) — **per-device** (no sync between laptop/phone).
+  **All 33 switches now BAKED IN as defaults** (`seedDefaultPositions`,
+  `POS_SEED_VERSION=1` in `seed.ts` — the user's confirmed 2026-07-07 placement).
+  Seeds on every device / whenever positions are missing (survives iOS IndexedDB
+  eviction; guarded on row-count, not just the localStorage version flag). Bump
+  `POS_SEED_VERSION` to push updated defaults (overwrites those 33 ids on all
+  installs). Track circuits (tc-*) are not placed yet. Old one-time clear of the
+  pre-seeded clump still runs via `localStorage 'railapp.posReset'='2'`.
+  Edit-mode footer has **"Kopijuoti vietas"** and **"Įklijuoti vietas"** buttons to export/import positions as JSON for manual transfer between devices.
   Normal mode shows only the **current task's** elements (not all 51).
 
 ### Other diagram options (available, not active)
@@ -44,9 +51,9 @@ room, embedded as a base64 image in `src/assets/schematics/rimkai.svg`. Rendered
   `SchematicCanvas` (SVG with baked-in shapes).
 
 ## Next steps (pick up here)
-1. **User places the markers** in the app (edit mode) — the diagram starts empty.
-   (Mostly done — 32/33 placed as of 2026-07-07; user positions saved in the
-   `elementPositions` table and are NOT cleared by reseeds.)
+1. ~~**User places the markers**~~ **DONE 2026-07-07** — all 33 switches placed and
+   now BAKED IN as defaults (`seedDefaultPositions`), so every device/reinstall
+   gets them. (Track circuits tc-* still unplaced — place + re-bake when needed.)
 2. **Diagram look** — if the stretched sketch still isn't right, either bump
    `STRETCH` in `scripts/paint-to-svg.py`, switch to the vector
    (`generate-schematic.py`), or the user sends a draw.io/Inkscape SVG to plug in.

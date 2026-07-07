@@ -8,14 +8,17 @@ import {
   getPositions,
   setPosition,
   deletePosition,
+  bulkSetPositions,
 } from '../services/db/queries/positions'
 import { useActiveSession } from '../hooks/useActiveSession'
 import { useHighlightedElements } from '../hooks/useHighlightedElements'
 import { useSessionProgress } from '../hooks/useSessionProgress'
 import { useUiStore } from '../store/uiStore'
+import { serializePositions, parsePositions } from '../utils/positionsTransfer'
 import { Header } from '../components/layout/Header'
 import { ProgressBar } from '../components/ui/ProgressBar'
 import { Button } from '../components/ui/Button'
+import { Modal } from '../components/ui/Modal'
 import { DiagramBoard } from '../components/schematic/DiagramBoard'
 import { ElementDetailModal } from '../components/inspection/ElementDetailModal'
 import type { ElementPosition, SchematicElement } from '../types'
@@ -64,6 +67,9 @@ export function SchematicView() {
   const [toast, setToast] = useState<string | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [placingId, setPlacingId] = useState<string | null>(null)
+  const [transfer, setTransfer] = useState<
+    null | { mode: 'export' | 'import'; text: string }
+  >(null)
 
   const positionsMap = useMemo(() => {
     const m = new Map<string, ElementPosition>()
@@ -127,6 +133,56 @@ export function SchematicView() {
     if (!placingId) return
     await deletePosition(db, placingId)
     setToast('Vieta pašalinta')
+  }
+
+  const exportPositions = async () => {
+    if (!stationId) return
+    if (positionsList.length === 0) {
+      setToast('Nėra pažymėtų vietų')
+      return
+    }
+    const text = serializePositions(stationId, positionsList)
+    try {
+      if (navigator.clipboard) await navigator.clipboard.writeText(text)
+    } catch {
+      /* ignore */
+    }
+    setTransfer({ mode: 'export', text })
+  }
+
+  const importPositions = () => {
+    if (!stationId) return
+    setTransfer({ mode: 'import', text: '' })
+  }
+
+  const doImport = async () => {
+    if (!stationId) return
+    const result = parsePositions(transfer?.text ?? '', stationId)
+    if (result.status === 'bad-format') {
+      setToast('Neteisingas formatas')
+      return
+    }
+    if (result.positions.length === 0) {
+      setToast('Nerasta vietų')
+      return
+    }
+    try {
+      await bulkSetPositions(db, result.positions)
+      setToast('Įkelta vietų: ' + result.positions.length)
+      setTransfer(null)
+    } catch {
+      setToast('Klaida įkeliant')
+    }
+  }
+
+  const copyExport = async () => {
+    try {
+      if (!navigator.clipboard) throw new Error('no clipboard')
+      await navigator.clipboard.writeText(transfer!.text)
+      setToast('Nukopijuota')
+    } catch {
+      setToast('Nepavyko nukopijuoti')
+    }
   }
 
   const toggleEdit = () => {
@@ -243,6 +299,12 @@ export function SchematicView() {
                 Pašalinti vietą
               </Button>
             )}
+            <Button variant="secondary" fullWidth onClick={exportPositions}>
+              Kopijuoti vietas
+            </Button>
+            <Button variant="secondary" fullWidth onClick={importPositions}>
+              Įklijuoti vietas
+            </Button>
             <Button variant="secondary" fullWidth onClick={toggleEdit}>
               Baigti redagavimą
             </Button>
@@ -260,6 +322,47 @@ export function SchematicView() {
       </div>
 
       {toast && <div className={styles.toast}>{toast}</div>}
+
+      <Modal
+        open={transfer !== null}
+        onClose={() => setTransfer(null)}
+        title={transfer?.mode === 'export' ? 'Kopijuoti vietas' : 'Įklijuoti vietas'}
+      >
+        {transfer?.mode === 'export' ? (
+          <>
+            <p className={styles.transferHint}>
+              Nukopijuokite šį tekstą ir nusiųskite į kitą įrenginį (pvz. el. paštu
+              ar žinute).
+            </p>
+            <textarea
+              className={styles.transferArea}
+              readOnly
+              value={transfer.text}
+              onFocus={(e) => e.currentTarget.select()}
+            />
+            <Button variant="primary" fullWidth onClick={copyExport}>
+              Kopijuoti
+            </Button>
+          </>
+        ) : (
+          <>
+            <p className={styles.transferHint}>
+              Įklijuokite iš kito įrenginio nukopijuotą tekstą.
+            </p>
+            <textarea
+              className={styles.transferArea}
+              value={transfer?.text ?? ''}
+              onChange={(e) =>
+                setTransfer((t) => (t ? { ...t, text: e.target.value } : t))
+              }
+              placeholder="{&quot;kind&quot;:&quot;railapp-positions&quot;,...}"
+            />
+            <Button variant="primary" fullWidth onClick={doImport}>
+              Įkelti
+            </Button>
+          </>
+        )}
+      </Modal>
 
       <ElementDetailModal
         sessionId={session.id}

@@ -18,3 +18,10 @@ export async function setPosition(
 export async function deletePosition(db: RailDB, id: string): Promise<void> {
   await db.elementPositions.delete(id)
 }
+
+export async function bulkSetPositions(
+  db: RailDB,
+  positions: ElementPosition[],
+): Promise<void> {
+  await db.elementPositions.bulkPut(positions)
+}
